@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter
-@Table(name = "users") // Note: 'user' is a reserved keyword in PostgreSQL
+@Table(name = "users") 
 public class UserEntity {
 
     @Id
