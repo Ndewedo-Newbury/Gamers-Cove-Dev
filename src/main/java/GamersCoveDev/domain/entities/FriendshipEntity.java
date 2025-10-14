@@ -3,6 +3,12 @@ package GamersCoveDev.domain.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * Friendship table holds all the relationships in the database between users. If a user is a friend to another user (Frienship Status = Accepted)
+ * then friend can view user's gamertags
+ *
+ *
+ */
 @Data
 @Entity
 @Table(name = "friendships")
@@ -16,11 +22,13 @@ public class FriendshipEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    
-    private Long requesterId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "requester_id", nullable = false)
+    private UserEntity requester;
 
-    private Long receiverId;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receiver_id", nullable = false)
+    private UserEntity receiver;
 
     @Column(name = "created_at", updatable = false)
     @org.hibernate.annotations.CreationTimestamp
@@ -29,7 +37,7 @@ public class FriendshipEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 10, nullable = false)
     private FriendshipStatus status = FriendshipStatus.PENDING;
-    
+
     public enum FriendshipStatus {
         PENDING("pending"),
         ACCEPTED("accepted"),
@@ -46,14 +54,20 @@ public class FriendshipEntity {
         }
     }
 
-    // Constructor with UserEntity objects
-    public FriendshipEntity(Long requester, Long receiver) {
-        this.requesterId = requester;
-        this.receiverId = receiver;
+    public FriendshipEntity(UserEntity requester, UserEntity receiver) {
+        this.requester = requester;
+        this.receiver = receiver;
         this.status = FriendshipStatus.PENDING;
     }
 
-    // Helper methods
+    public Long getRequesterId() {
+        return requester != null ? requester.getId() : null;
+    }
+
+    public Long getReceiverId() {
+        return receiver != null ? receiver.getId() : null;
+    }
+
     public boolean isAccepted() {
         return status == FriendshipStatus.ACCEPTED;
     }
@@ -65,5 +79,4 @@ public class FriendshipEntity {
     public boolean isDeclined() {
         return status == FriendshipStatus.DECLINED;
     }
-
 }
