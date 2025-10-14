@@ -1,4 +1,4 @@
-package GamersCoveDev.domain.entities;
+package GamersCoveDev.domains.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
