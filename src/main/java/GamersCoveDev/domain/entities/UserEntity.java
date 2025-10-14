@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+/**
+ * User table stores individual profiles each containing private data unique to that user
+ */
 @Data
 @Entity
 @Builder
@@ -98,7 +101,6 @@ public class UserEntity {
         }
     }
 
-    // NEW: Utility methods for favorite game IDs
     public Long[] getFavoriteGameIds() {
         if (favoriteGameIds == null || favoriteGameIds.trim().isEmpty()) {
             return new Long[0];
@@ -119,7 +121,6 @@ public class UserEntity {
         }
     }
 
-    // Helper methods for managing favorite games
     public void addFavoriteGameId(Long gameId) {
         Long[] currentIds = getFavoriteGameIds();
 
@@ -130,7 +131,6 @@ public class UserEntity {
             }
         }
 
-        // Add new game ID
         Long[] newIds = new Long[currentIds.length + 1];
         System.arraycopy(currentIds, 0, newIds, 0, currentIds.length);
         newIds[currentIds.length] = gameId;
@@ -150,19 +150,6 @@ public class UserEntity {
         return Arrays.stream(currentIds).anyMatch(id -> id.equals(gameId));
     }
 
-    // Backward compatibility - convert String[] to Long[]
-    // This method is kept for backward compatibility but should be deprecated
-    // You should use setFavoriteGameIds instead
-    public void setFavoriteGames(String[] gameNames) {
-    }
-
-    // This method is kept for backward compatibility
-    // In practice, you'd need to fetch game titles by IDs from GameService
-    public String[] getFavoriteGames() {
-        return new String[0];
-    }
-
-    // UPDATED: Gamertags methods now work with proper Map
     public void addGamertag(String platform, String gamertag) {
         if (gamertags == null) {
             gamertags = new HashMap<>();
