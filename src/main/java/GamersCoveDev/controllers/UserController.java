@@ -3,6 +3,7 @@ package GamersCoveDev.controllers;
 import GamersCoveDev.domains.dto.UserDto;
 import GamersCoveDev.domains.entities.UserEntity;
 import GamersCoveDev.mappers.Mapper;
+import GamersCoveDev.services.FriendshipService;
 import GamersCoveDev.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-        import java.util.HashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,11 +22,14 @@ public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
+    private final FriendshipService friendshipService;
     private final Mapper<UserEntity, UserDto> userMapper;
 
     public UserController(UserService userService,
-                          Mapper<UserEntity, UserDto> userMapper) {
+                          Mapper<UserEntity, UserDto> userMapper,
+                          FriendshipService friendshipService) {
         this.userService = userService;
+        this.friendshipService = friendshipService;
         this.userMapper = userMapper;
     }
 
@@ -86,6 +90,7 @@ public class UserController {
         }
     }
 
+    // MODIFIED: Added gamertag visibility filtering
     @GetMapping(path = "/users/username/{username}")
     public ResponseEntity<UserDto> getUserByUsername(
             @PathVariable("username") String username,
@@ -100,7 +105,25 @@ public class UserController {
 
             if (userFound.isPresent()) {
                 UserEntity userEntity = userFound.get();
+
+                // NEW: Check gamertag visibility
+                boolean canViewGamertags = friendshipService.canViewGamertags(
+                        userEntity.getId(),
+                        currentUserId != null ? currentUserId : -1L,
+                        userEntity.getGamertagsVisibility()
+                );
+
                 UserDto userDto = userMapper.mapTo(userEntity);
+
+                // NEW: Filter gamertags based on visibility
+                if (!canViewGamertags) {
+                    userDto.setGamertags(new HashMap<>());
+                    logger.info("Gamertags hidden for user {} (visibility: {})",
+                            username, userEntity.getGamertagsVisibility());
+                } else {
+                    logger.info("Gamertags visible for user {}", username);
+                }
+
                 return ResponseEntity.ok(userDto);
             } else {
                 logger.warn("****************************************************");
@@ -110,6 +133,50 @@ public class UserController {
             }
         } catch (Exception e) {
             logger.error("Error fetching user by username", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // NEW: Added getUserById endpoint with gamertag visibility
+    @GetMapping(path = "/users/{userId}")
+    public ResponseEntity<UserDto> getUserById(
+            @PathVariable("userId") Long userId,
+            @AuthenticationPrincipal Long currentUserId) {
+        logger.info("=== GET /api/users/{} ENDPOINT CALLED ===", userId);
+        logger.info("Fetching user profile for user ID: {}", userId);
+        logger.info("Requesting user ID: {}", currentUserId);
+        logger.info("==========================================");
+
+        try {
+            Optional<UserEntity> user = userService.findById(userId);
+            if (user.isPresent()) {
+                UserEntity userEntity = user.get();
+
+                // Check gamertag visibility
+                boolean canViewGamertags = friendshipService.canViewGamertags(
+                        userId,
+                        currentUserId != null ? currentUserId : -1L,
+                        userEntity.getGamertagsVisibility()
+                );
+
+                UserDto userDto = userMapper.mapTo(userEntity);
+
+                // Filter gamertags based on visibility
+                if (!canViewGamertags) {
+                    userDto.setGamertags(new HashMap<>());
+                    logger.info("Gamertags hidden for user {} (visibility: {})",
+                            userId, userEntity.getGamertagsVisibility());
+                } else {
+                    logger.info("Gamertags visible for user {}", userId);
+                }
+
+                return ResponseEntity.ok(userDto);
+            } else {
+                logger.warn("User not found with ID: {}", userId);
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            logger.error("Error fetching user by ID", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -141,7 +208,6 @@ public class UserController {
         }
     }
 
-    // NEW: Update gamertag visibility
     @PatchMapping(path = "/users/me/gamertags-visibility")
     public ResponseEntity<UserDto> updateGamertagsVisibility(
             @RequestBody Map<String, String> request,
@@ -181,7 +247,6 @@ public class UserController {
         }
     }
 
-    // NEW: Add gamertag
     @PostMapping(path = "/users/me/gamertags")
     public ResponseEntity<UserDto> addGamertag(
             @RequestBody Map<String, String> request,
@@ -218,7 +283,6 @@ public class UserController {
         }
     }
 
-    // NEW: Remove gamertag
     @DeleteMapping(path = "/users/me/gamertags/{platform}")
     public ResponseEntity<UserDto> removeGamertag(
             @PathVariable("platform") String platform,
@@ -247,7 +311,6 @@ public class UserController {
         }
     }
 
-    // NEW: Update user profile (partial update)
     @PatchMapping(path = "/users/me/profile")
     public ResponseEntity<UserDto> updateUserProfile(
             @RequestBody Map<String, Object> updates,
