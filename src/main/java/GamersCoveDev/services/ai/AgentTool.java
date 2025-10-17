@@ -1,4 +1,4 @@
-package GamersCoveDev.services;
+package GamersCoveDev.services.ai;
 
 public interface AgentTool {
 

@@ -1,6 +1,6 @@
 package GamersCoveDev.repositories;
 
-import GamersCoveDev.domain.entities.ReviewEntity;
+import GamersCoveDev.domains.entities.ReviewEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

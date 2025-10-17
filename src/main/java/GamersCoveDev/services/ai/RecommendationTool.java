@@ -1,5 +1,5 @@
-package GamersCoveDev.services;
-import GamersCoveDev.domain.entities.GameEntity;
+package GamersCoveDev.services.ai;
+import GamersCoveDev.domains.entities.GameEntity;
 import GamersCoveDev.repositories.GameRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.langchain4j.agent.tool.Tool;

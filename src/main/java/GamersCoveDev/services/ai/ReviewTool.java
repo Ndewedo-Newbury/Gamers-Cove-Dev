@@ -1,7 +1,7 @@
-package GamersCoveDev.services;
+package GamersCoveDev.services.ai;
 import org.apache.commons.text.similarity.LevenshteinDistance;
-import GamersCoveDev.domain.entities.GameEntity;
-import GamersCoveDev.domain.entities.ReviewEntity;
+import GamersCoveDev.domains.entities.GameEntity;
+import GamersCoveDev.domains.entities.ReviewEntity;
 import GamersCoveDev.repositories.GameRepository;
 import GamersCoveDev.repositories.ReviewRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,7 +27,7 @@ public class ReviewTool implements AgentTool {
 
     @Tool("Returns A json format of the reviews Relevant to the user's query")
     public String reviewTool(@UserMessage String gameTitle) {
-        var game = gamesRepo.findByTitleIgnoreCase(gameTitle).orElse(null);
+        GameEntity game = gamesRepo.findByTitleIgnoreCase(gameTitle).orElse(null);
 
         if (game == null) {
             LevenshteinDistance ld = new LevenshteinDistance();
