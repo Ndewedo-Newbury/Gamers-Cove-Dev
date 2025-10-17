@@ -1,18 +1,22 @@
-package GamersCoveDev.domain.entities;
+package GamersCoveDev.domains.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Max;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
 @Entity
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "reviews")
 public class ReviewEntity {
 
@@ -42,18 +46,6 @@ public class ReviewEntity {
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT now()")
     @org.hibernate.annotations.CreationTimestamp
     private LocalDateTime createdAt;
-
-    // Default constructor
-    public ReviewEntity() {
-    }
-
-    // Constructor with required fields
-    public ReviewEntity(Long userId, Long gameId, Integer rating, String content) {
-        this.userId = userId;
-        this.gameId = gameId;
-        this.rating = rating;
-        this.content = content;
-    }
 
     public void setRating(Integer rating) {
         if (rating != null && (rating < 1 || rating > 10)) {
