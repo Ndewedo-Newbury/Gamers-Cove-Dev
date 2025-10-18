@@ -19,9 +19,10 @@ public class RecommendationTool implements AgentTool {
     }
 
 
-    @Tool("Fetches and returns detailed info for up to 4 games (the main game and three similar ones).")
+    @Tool("Recommends 3 games similar to the specified game by title.")
     public String recommendGames(@UserMessage String gameTitle, String similar1
             , String similar2, String similar3) {
+        System.out.println("[TOOL CALLED] RecommandTool for: " + gameTitle);
         var game = gamesRepo.findByTitleIgnoreCase(gameTitle).orElse(null);
         List<String> titles = List.of(gameTitle, similar2, similar3);
         List<GameEntity> closestGames = new ArrayList<>();

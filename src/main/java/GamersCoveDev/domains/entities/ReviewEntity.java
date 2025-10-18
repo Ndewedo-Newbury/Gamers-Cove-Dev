@@ -46,6 +46,12 @@ public class ReviewEntity {
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT now()")
     @org.hibernate.annotations.CreationTimestamp
     private LocalDateTime createdAt;
+    public ReviewEntity(Long userId, Long gameId, Integer rating, String content) {
+        this.userId = userId;
+        this.gameId = gameId;
+        this.rating = rating;
+        this.content = content;
+    }
 
     public void setRating(Integer rating) {
         if (rating != null && (rating < 1 || rating > 10)) {

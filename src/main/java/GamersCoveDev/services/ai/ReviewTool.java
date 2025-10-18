@@ -1,4 +1,5 @@
 package GamersCoveDev.services.ai;
+import GamersCoveDev.mockdata.mockgames;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import GamersCoveDev.domains.entities.GameEntity;
 import GamersCoveDev.domains.entities.ReviewEntity;
@@ -25,38 +26,63 @@ public class ReviewTool implements AgentTool {
 
 
 
-    @Tool("Returns A json format of the reviews Relevant to the user's query")
+    @Tool("Fetches the top 3 highest-rated reviews for the given game title. Uses fuzzy matching if no exact match is found.")
     public String reviewTool(@UserMessage String gameTitle) {
+        System.out.println("[TOOL CALLED] ReviewTool for: " + gameTitle);
+
         GameEntity game = gamesRepo.findByTitleIgnoreCase(gameTitle).orElse(null);
 
         if (game == null) {
             LevenshteinDistance ld = new LevenshteinDistance();
-            String normalizedUserTitle = gameTitle.toLowerCase();
+            String normalizedTitle = gameTitle.toLowerCase();
 
-            List<GameEntity> allGames = gamesRepo.findAll();
-            // Sort all games by similarity (smallest distance = closest match)
-            List<GameEntity>  closestGames = allGames.stream()
-                    .sorted(Comparator.comparingInt(g -> ld.apply(g.getTitle().toLowerCase(), normalizedUserTitle)))
-                    .limit(5) // get top 5 similar titles
+            List<GameEntity> closestGames = gamesRepo.findAll().stream()
+                    .sorted(Comparator.comparingInt(
+                            g -> ld.apply(g.getTitle().toLowerCase(), normalizedTitle)))
+                    .limit(1)
                     .toList();
 
+            if (closestGames.isEmpty()) {
+                return jsonError("No matching games found for title: " + gameTitle);
+            }
 
-        if (closestGames.isEmpty()) {
-            return "{\\\"message\\\": \\\"No matching games found.\\\"}";// no match found
+            // ✅ Re-fetch using ID to ensure managed entity
+            Long matchedId = closestGames.get(0).getId();
+            game = gamesRepo.findById(matchedId).orElse(null);
+            game = gamesRepo.findByTitleIgnoreCase(gameTitle).orElse(null);
+            if (game == null) {
+                game = mockgames.GAMES.stream()
+                        .filter(g -> g.getTitle().equalsIgnoreCase(gameTitle))
+                        .findFirst()
+                        .orElse(null);
+            }
+            System.out.println("🔍 Using closest match: " + game.getTitle() + " (id=" + matchedId + ")");
         }
 
-            game = closestGames.get(0);
+        if (game == null) {
+            return jsonError("Unable to retrieve matching game from database.");
         }
 
-        List<ReviewEntity> review = reviewRepo.findTop3ByGameIdOrderByRatingDesc(game.getId());
+        List<ReviewEntity> reviews = reviewRepo.findTop3ByGameIdOrderByRatingDesc(game.getId());
 
-        try{
-            return new ObjectMapper().writeValueAsString(review);
+        if (reviews.isEmpty()) {
+            return jsonError("No reviews found for game: " + game.getTitle());
+        }
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(reviews);
         } catch (Exception e) {
-           return "[]";
+            return jsonError("Error serializing reviews: " + e.getMessage());
         }
-
     }
+
+
+
+private String jsonError(String message) {
+    return String.format("{\"error\": \"%s\"}", message.replace("\"", "'"));
+}
+
 
 
 
