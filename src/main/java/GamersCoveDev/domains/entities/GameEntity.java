@@ -85,9 +85,10 @@ public class GameEntity {
     }
 
     // Full constructor
-    public GameEntity(String externalApiId, String title, String description,
+    public GameEntity(Long id ,String externalApiId, String title, String description,
                       String coverImageUrl, LocalDate releaseDate,
                       String[] platforms, String[] genres) {
+        this.id = id;
         this.externalApiId = externalApiId;
         this.title = title;
         this.description = description;
