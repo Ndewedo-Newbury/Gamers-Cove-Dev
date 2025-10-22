@@ -1,4 +1,4 @@
-package GamersCoveDev.config;
+package GamersCoveDev.config.testdata;
 
 import GamersCoveDev.domains.entities.UserEntity;
 import GamersCoveDev.repositories.UserRepository;
@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 @Component
 @Profile({"dev", "test"})
+@Order(1) // Run first
 public class UserData implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(UserData.class);

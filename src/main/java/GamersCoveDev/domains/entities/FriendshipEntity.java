@@ -4,14 +4,14 @@ import jakarta.persistence.*;
 import lombok.*;
 
 /**
- * Friendship table holds all the relationships in the database between users. If a user is a friend to another user (Frienship Status = Accepted)
+ * Friendship table holds all the relationships in the database between users.
+ * If a user is a friend to another user (Friendship Status = Accepted)
  * then friend can view user's gamertags
- *
- *
  */
 @Data
 @Entity
-@Table(name = "friendships")
+@Table(name = "friendships",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"requester_id", "receiver_id"}))
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -78,5 +78,21 @@ public class FriendshipEntity {
 
     public boolean isDeclined() {
         return status == FriendshipStatus.DECLINED;
+    }
+
+    // NEW: Helper method to check if a user is part of this friendship
+    public boolean involvesUser(Long userId) {
+        return (requester != null && requester.getId().equals(userId)) ||
+                (receiver != null && receiver.getId().equals(userId));
+    }
+
+    // NEW: Get the other user in the friendship
+    public UserEntity getOtherUser(Long userId) {
+        if (requester != null && requester.getId().equals(userId)) {
+            return receiver;
+        } else if (receiver != null && receiver.getId().equals(userId)) {
+            return requester;
+        }
+        return null;
     }
 }
