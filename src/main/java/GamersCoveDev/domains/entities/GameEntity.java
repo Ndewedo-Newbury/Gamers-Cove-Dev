@@ -19,7 +19,8 @@ import java.util.ArrayList;
 public class GameEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "game_sequence")
+    @SequenceGenerator(name = "game_sequence", sequenceName = "game_sequence", allocationSize = 1)
     private Long id;
 
     @NotNull

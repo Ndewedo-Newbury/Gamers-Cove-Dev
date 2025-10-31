@@ -1,16 +1,14 @@
 package GamersCoveDev.services.ai;
 import GamersCoveDev.mockdata.mockgames;
+import GamersCoveDev.repositories.ReviewRepository;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import GamersCoveDev.domains.entities.GameEntity;
 import GamersCoveDev.domains.entities.ReviewEntity;
 import GamersCoveDev.repositories.GameRepository;
-import GamersCoveDev.repositories.ReviewRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.service.UserMessage;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 

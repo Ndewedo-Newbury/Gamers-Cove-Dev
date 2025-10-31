@@ -6,6 +6,8 @@ import GamersCoveDev.services.GameService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Propagation;
 
 import java.util.Optional;
 import java.util.List;
@@ -22,27 +24,60 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public GameEntity createGameEntity(GameEntity gameEntity) {
-        logger.info("=== CREATE GAME REQUEST ===");
-        logger.info("Creating game with external API ID: {}", gameEntity.getExternalApiId());
-        logger.info("Title: {}", gameEntity.getTitle());
-        logger.info("Description: {}", gameEntity.getDescription());
-        logger.info("Cover Image URL: {}", gameEntity.getCoverImageUrl());
-        logger.info("Release Date: {}", gameEntity.getReleaseDate());
+        try {
+            logger.info("=== CREATE GAME REQUEST ===");
+            logger.info("Creating game with external API ID: {}", gameEntity.getExternalApiId());
+            logger.info("Title: {}", gameEntity.getTitle());
+            logger.info("Description: {}", gameEntity.getDescription());
+            logger.info("Cover Image URL: {}", gameEntity.getCoverImageUrl());
+            logger.info("Release Date: {}", gameEntity.getReleaseDate());
 
-        if (gameEntity.getPlatforms() != null) {
-            logger.info("Platforms: {}", String.join(", ", gameEntity.getPlatforms()));
+            if (gameEntity.getPlatforms() != null) {
+                logger.info("Platforms: {}", String.join(", ", gameEntity.getPlatforms()));
+            }
+
+            if (gameEntity.getGenres() != null) {
+                logger.info("Genres: {}", String.join(", ", gameEntity.getGenres()));
+            }
+
+            // Check if game with the same externalApiId already exists
+            Optional<GameEntity> existingGame = gameRepository.findByExternalApiId(gameEntity.getExternalApiId());
+            if (existingGame.isPresent()) {
+                logger.info("Game with external API ID {} already exists. Updating...", gameEntity.getExternalApiId());
+                GameEntity existing = existingGame.get();
+                existing.setTitle(gameEntity.getTitle());
+                existing.setDescription(gameEntity.getDescription());
+                existing.setCoverImageUrl(gameEntity.getCoverImageUrl());
+                existing.setReleaseDate(gameEntity.getReleaseDate());
+                existing.setPlatforms(gameEntity.getPlatforms());
+                existing.setGenres(gameEntity.getGenres());
+                
+                GameEntity updatedGame = gameRepository.save(existing);
+                logger.info("Game updated successfully with ID: {}", updatedGame.getId());
+                logger.info("============================");
+                return updatedGame;
+            } else {
+                // Create new game
+                GameEntity newGame = new GameEntity();
+                newGame.setExternalApiId(gameEntity.getExternalApiId());
+                newGame.setTitle(gameEntity.getTitle());
+                newGame.setDescription(gameEntity.getDescription());
+                newGame.setCoverImageUrl(gameEntity.getCoverImageUrl());
+                newGame.setReleaseDate(gameEntity.getReleaseDate());
+                newGame.setPlatforms(gameEntity.getPlatforms());
+                newGame.setGenres(gameEntity.getGenres());
+                
+                GameEntity savedGame = gameRepository.save(newGame);
+                logger.info("Game created successfully with ID: {}", savedGame.getId());
+                logger.info("============================");
+                return savedGame;
+            }
+        } catch (Exception e) {
+            logger.error("Error in createGameEntity: {}", e.getMessage(), e);
+            throw e;
         }
-
-        if (gameEntity.getGenres() != null) {
-            logger.info("Genres: {}", String.join(", ", gameEntity.getGenres()));
-        }
-
-        GameEntity savedGame = gameRepository.save(gameEntity);
-        logger.info("Game created successfully with ID: {}", savedGame.getId());
-        logger.info("============================");
-
-        return savedGame;
     }
 
     @Override

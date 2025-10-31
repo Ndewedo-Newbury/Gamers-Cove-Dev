@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpStatus;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -63,6 +64,29 @@ public class GameController {
             return ResponseEntity.ok(gameDtos);
         } catch (Exception e) {
             logger.error("Error fetching all games: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping(path = "/games")
+    public ResponseEntity<GameDto> createGame(@RequestBody GameDto gameDto) {
+        logger.info("=== POST /api/games ===");
+        logger.info("Creating new game: {}", gameDto.getTitle());
+
+        try {
+            // Convert DTO to Entity
+            GameEntity gameEntity = gameMapper.mapFrom(gameDto);
+            
+            // Save the game
+            GameEntity savedGame = gameService.createGameEntity(gameEntity);
+            
+            // Convert back to DTO for the response
+            GameDto savedGameDto = gameMapper.mapTo(savedGame);
+            
+            logger.info("Successfully created game with ID: {}", savedGame.getId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedGameDto);
+        } catch (Exception e) {
+            logger.error("Error creating game: {}", e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
