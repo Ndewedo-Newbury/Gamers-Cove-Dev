@@ -26,6 +26,8 @@ public class SecurityConfig {
     private static final String[] PUBLIC_ENDPOINTS = {
         "/",
         "/index.html",
+        "/game/**",
+        "/game-detail.html",
         "/css/**",
         "/js/**",
         "/images/**",

@@ -10,10 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpStatus;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,20 +46,28 @@ public class GameController {
     }
 
     @GetMapping(path = "/games")
-    public ResponseEntity<List<GameDto>> getAllGames() {
+    public ResponseEntity<List<GameDto>> getAllGames(
+            @RequestParam(required = false) String search) {
         logger.info("=== GET /api/games ===");
-        logger.info("Fetching all games from database");
-
+        
         try {
-            List<GameEntity> games = gameService.findAll();
+            List<GameEntity> games;
+            if (search != null && !search.trim().isEmpty()) {
+                logger.info("Searching games with term: {}", search);
+                games = gameService.searchGames(search);
+            } else {
+                logger.info("Fetching all games from database");
+                games = gameService.findAll();
+            }
+            
             List<GameDto> gameDtos = games.stream()
                     .map(gameMapper::mapTo)
                     .collect(java.util.stream.Collectors.toList());
 
-            logger.info("Found {} games in database", gameDtos.size());
+            logger.info("Found {} games", gameDtos.size());
             return ResponseEntity.ok(gameDtos);
         } catch (Exception e) {
-            logger.error("Error fetching all games: {}", e.getMessage());
+            logger.error("Error fetching games: {}", e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

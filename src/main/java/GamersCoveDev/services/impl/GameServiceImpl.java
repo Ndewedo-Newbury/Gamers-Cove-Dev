@@ -138,4 +138,21 @@ public class GameServiceImpl implements GameService {
 
         return game;
     }
+
+    @Override
+    public List<GameEntity> searchGames(String searchTerm) {
+        logger.info("=== SEARCH GAMES ===");
+        logger.info("Searching for games with term: {}", searchTerm);
+
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            logger.info("Empty search term, returning empty list");
+            return List.of();
+        }
+
+        List<GameEntity> games = gameRepository.findByTitleContainingIgnoreCase(searchTerm.trim());
+        logger.info("Found {} games matching search term: {}", games.size(), searchTerm);
+        logger.info("====================");
+
+        return games;
+    }
 }

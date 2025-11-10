@@ -23,6 +23,17 @@ public class MockGameRepository implements GameRepository {
     }
 
     @Override
+    public List<GameEntity> findByTitleContainingIgnoreCase(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return List.of();
+        }
+        String lowerSearchTerm = searchTerm.toLowerCase();
+        return mockgames.GAMES.stream()
+                .filter(g -> g.getTitle() != null && g.getTitle().toLowerCase().contains(lowerSearchTerm))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Optional<GameEntity> findByExternalApiId(String externalApiId) {
         return mockgames.GAMES.stream()
                 .filter(g -> g.getExternalApiId().equals(externalApiId))

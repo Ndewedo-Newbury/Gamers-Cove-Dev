@@ -8,6 +8,22 @@
 </head>
 <body>
     <div class="container">
+        <!-- Search Bar -->
+        <div class="search-container">
+            <div class="search-wrapper">
+                <input 
+                    type="text" 
+                    id="gameSearch" 
+                    class="search-input" 
+                    placeholder="Search for games..."
+                    autocomplete="off"
+                />
+                <div class="search-icon">🔍</div>
+            </div>
+            <div id="searchResults" class="search-results"></div>
+        </div>
+
+        <!-- Widget Buttons -->
         <div class="widget-grid">
             <a href="#" class="widget-button profile-widget">
                 <div class="widget-content">
@@ -24,6 +40,7 @@
             </a>
         </div>
     </div>
+    <script src="/js/search.js"></script>
 </body>
 </html>
 

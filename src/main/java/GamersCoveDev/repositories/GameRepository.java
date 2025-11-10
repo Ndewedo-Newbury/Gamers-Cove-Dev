@@ -16,4 +16,7 @@ public interface GameRepository extends CrudRepository<GameEntity, Long> {
     Optional<GameEntity> findByTitle(String title);
     List<GameEntity> findByIdIn(List<Long> ids);
     List<GameEntity> findAll(); // already inherited but declared for clarity
+    
+    // Search games by title containing the search term (case-insensitive)
+    List<GameEntity> findByTitleContainingIgnoreCase(String searchTerm);
 }

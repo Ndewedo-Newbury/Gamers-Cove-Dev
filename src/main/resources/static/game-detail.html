@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Details - Gamers Cove</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/game-detail.css">
+</head>
+<body>
+    <div class="game-detail-container">
+        <!-- Back Button -->
+        <a href="/" class="back-button">
+            ← Back to Home
+        </a>
+
+        <!-- Loading State -->
+        <div id="loading" class="loading-state">
+            <div class="loading-spinner"></div>
+            <p>Loading game details...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="error" class="error-state" style="display: none;">
+            <h2>Game Not Found</h2>
+            <p>The game you're looking for doesn't exist.</p>
+            <a href="/" class="back-button">← Back to Home</a>
+        </div>
+
+        <!-- Game Content -->
+        <div id="gameContent" class="game-content" style="display: none;">
+            <!-- Game Header -->
+            <div class="game-header">
+                <div class="game-cover-section">
+                    <img id="gameCover" class="game-cover-large" src="" alt="Game Cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="game-cover-placeholder-large" style="display: none;">
+                        <span>🎮</span>
+                    </div>
+                </div>
+                <div class="game-header-info">
+                    <h1 id="gameTitle" class="game-title-large"></h1>
+                    <div id="gameName" class="game-name"></div>
+                    <div id="gameReleaseDate" class="game-release-date"></div>
+                </div>
+            </div>
+
+            <!-- Game Details Grid -->
+            <div class="game-details-grid">
+                <!-- Description -->
+                <div class="detail-section">
+                    <h2>Description</h2>
+                    <p id="gameDescription" class="game-description"></p>
+                </div>
+
+                <!-- Platforms -->
+                <div class="detail-section">
+                    <h2>Platforms</h2>
+                    <div id="gamePlatforms" class="tags-container"></div>
+                </div>
+
+                <!-- Genres -->
+                <div class="detail-section">
+                    <h2>Genres</h2>
+                    <div id="gameGenres" class="tags-container"></div>
+                </div>
+
+                <!-- Additional Info -->
+                <div class="detail-section">
+                    <h2>Additional Information</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">External API ID:</span>
+                            <span id="gameExternalApiId" class="info-value"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Game ID:</span>
+                            <span id="gameId" class="info-value"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/game-detail.js"></script>
+</body>
+</html>
+

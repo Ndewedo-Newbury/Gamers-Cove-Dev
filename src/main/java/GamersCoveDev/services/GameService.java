@@ -11,4 +11,5 @@ public interface GameService {
     Optional<GameEntity> findTitle(String title);
     List<GameEntity> findAll();
     Optional<GameEntity> findByExternalApiId(String externalApiId);
+    List<GameEntity> searchGames(String searchTerm);
 }
