@@ -14,8 +14,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
@@ -26,6 +24,11 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
     
     private static final String[] PUBLIC_ENDPOINTS = {
+        "/",
+        "/index.html",
+        "/css/**",
+        "/js/**",
+        "/images/**",
         "/actuator/health",
         "/v3/api-docs/**",
         "/swagger-ui/**",
