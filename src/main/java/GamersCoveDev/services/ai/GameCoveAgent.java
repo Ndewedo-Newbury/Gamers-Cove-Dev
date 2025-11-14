@@ -1,72 +1,63 @@
 package GamersCoveDev.services.ai;
 
-import GamersCoveDev.repositories.MockGameRepository;
-import GamersCoveDev.repositories.MockReviewRepository;
-import dev.langchain4j.model.openai.OpenAiChatModel;
+import GamersCoveDev.repositories.GameRepository;
+import GamersCoveDev.repositories.ReviewRepository;
+import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.service.AiServices;
+import dev.langchain4j.model.openai.OpenAiChatModel;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.stereotype.Service;
 
-import java.util.Scanner;
-import java.util.spi.ToolProvider;
-
+@Service
 public class GameCoveAgent {
-    public MockReviewRepository reviewRepo;
-    private MockGameRepository gameRepo;
-    private final AiAgent chatAgent;
-       public GameCoveAgent(ReviewTool reviewTool,RecommendationTool recommendationTool) {
 
-           var model = OpenAiChatModel.builder()
-                   .apiKey(System.getenv("OPENAI_API_KEY"))
-                   .modelName("gpt-4o-mini")
-                   .temperature(0.7)
-                   .build();
+    private final AiAssistant chatAgent;
+    private final MessageWindowChatMemory chatMemory;
 
-           this.chatAgent =AiServices.builder(AiAgent.class)
-                   .chatLanguageModel(model)
-                   .tools(reviewTool,recommendationTool)
-                   .build();
-       }
-       public String chat(String message) {
-           return chatAgent.chat(message);
-       }
+    public GameCoveAgent(GameRepository gameRepository, ReviewRepository reviewRepository) {
+        // Initialize with empty chat memory
+        this.chatMemory = MessageWindowChatMemory.withMaxMessages(20);
+        
+        // 🔹 Load .env from project root
+        Dotenv dotenv = Dotenv.configure()
+                .directory(".")        // look in working directory
+                .filename(".env")      // load .env file
+                .ignoreIfMalformed()
+                .ignoreIfMissing()
+                .load();
 
-       public static void main(String[] args) {
-           MockReviewRepository reviewRepo = new MockReviewRepository();
-           MockGameRepository gamesRepo = new MockGameRepository();
-           // 🔐 Make sure your key is set: echo %OPENAI_API_KEY% (Windows) or echo $OPENAI_API_KEY (Mac/Linux)
-           if (System.getenv("OPENAI_API_KEY") == null) {
-               System.err.println("❌ OPENAI_API_KEY not set!");
-               return;
-           }
+        String apiKey = dotenv.get("OPENAI_API_KEY");
 
-           // 🧩 Create mock tools (replace with real beans or fakes if needed)
-           ReviewTool reviewTool = new ReviewTool(  reviewRepo, gamesRepo); // you can pass mocks here for isolated testing
-           RecommendationTool recommendationTool = new RecommendationTool(gamesRepo);
+        if (apiKey == null || apiKey.isBlank()) {
+            throw new RuntimeException("❌ OPENAI_API_KEY missing in .env!");
+        }
 
-           // 🧠 Create the chat agent
-           GameCoveAgent agent = new GameCoveAgent(reviewTool, recommendationTool);
+        // Debug without exposing whole key
+        System.out.println("Loaded OPENAI_API_KEY = " + apiKey.substring(0, 12) + "...");
 
-           // 💬 Interactive console test
-           Scanner scanner = new Scanner(System.in);
-           System.out.println("🎮 GamersCove AI — type a message (type 'exit' to quit):");
+        var chatModel = OpenAiChatModel.builder()
+                .apiKey(apiKey)
+                .modelName("gpt-4o-mini")
+                .temperature(0.7)
+                .build();
 
-           while (true) {
-               System.out.print("You: ");
-               String input = scanner.nextLine();
+        // Initialize tools with repositories
+        ReviewTool reviewTool = new ReviewTool(reviewRepository, gameRepository);
+        RecommendationTool recommendationTool = new RecommendationTool(gameRepository);
+        RandomGameTool randomGameTool = new RandomGameTool(gameRepository);
+        
+        this.chatAgent = AiServices.builder(AiAssistant.class)
+                .chatLanguageModel(chatModel)
+                .chatMemory(chatMemory)
+                .tools(reviewTool, recommendationTool, randomGameTool)
+                .build();
+    }
 
-               if (input.equalsIgnoreCase("exit")) break;
+    public String chat(String message) {
+        return chatAgent.chat(message);
+    }
 
-               try {
-                   String response = agent.chat(input);
-                   System.out.println("🧠 AI: " + response);
-               } catch (Exception e) {
-                   System.err.println("Error: " + e.getMessage());
-               }
-           }
-
-           scanner.close();
-           System.out.println("👋 Goodbye!");
-           }
-
-
+    public static void main(String[] args) {
+        System.out.println("Please run the application using Spring Boot");
+    }
 }

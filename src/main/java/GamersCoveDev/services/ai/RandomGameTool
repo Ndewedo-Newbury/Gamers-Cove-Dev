@@ -1,0 +1,70 @@
+package GamersCoveDev.services.ai;
+
+import GamersCoveDev.domains.entities.GameEntity;
+import GamersCoveDev.mockdata.mockgames;
+import GamersCoveDev.repositories.GameRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.langchain4j.agent.tool.Tool;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+@Service
+public class RandomGameTool implements AgentTool {
+
+    private final GameRepository gamesRepo;
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final Random random = new Random();
+
+    public RandomGameTool(GameRepository gamesRepo) {
+        this.gamesRepo = gamesRepo;
+    }
+
+    /**
+     * Picks a random game from the database.
+     * Use this when you want to quiz the user about a random game
+     * or start a "guess the game" interaction.
+     */
+    @Tool("""
+          Selects a random game from the database.
+          Use this when the user wants to play a QUIZ or says things like:
+          "quiz me", "let's play a quiz", "guess the game", or "random game challenge".
+          """)
+    public String randomGame() {
+        System.out.println("[TOOL CALLED] RandomGameTool.randomGame()");
+
+        // First try to get games from the database
+        List<GameEntity> games = gamesRepo.findAll();
+        
+        // If no games in database, use mock data
+        if (games == null || games.isEmpty()) {
+            System.out.println("No games in database, using mock data");
+            games = new ArrayList<>(mockgames.GAMES);
+        }
+
+        GameEntity picked = games.get(random.nextInt(games.size()));
+
+        try {
+            // You can serialize the whole entity; frontend will map it to GameDto
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(picked);
+        } catch (Exception e) {
+            return jsonError("Error serializing random game: " + e.getMessage());
+        }
+    }
+
+    private String jsonError(String message) {
+        return String.format("{\"error\": \"%s\"}", message.replace("\"", "'"));
+    }
+
+    @Override
+    public String getName() {
+        return "Random Game Tool";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Selects a random game from the database and returns it as JSON, useful for quizzes or surprise recommendations.";
+    }
+}
