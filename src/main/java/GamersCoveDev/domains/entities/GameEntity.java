@@ -29,6 +29,11 @@ public class GameEntity {
     private String externalApiId;
 
     @NotNull
+    @Size(max = 255)
+    @Column(name = "name", nullable = false, length = 255)
+    private String name;
+
+    @NotNull
     @Size(max = 200)
     @Column(name = "title", nullable = false, length = 200)
     private String title;
@@ -47,6 +52,15 @@ public class GameEntity {
 
     @Column(name = "genres", columnDefinition = "TEXT")
     private String genres;
+
+    // JPA lifecycle callback to sync name with title before persisting
+    @PrePersist
+    @PreUpdate
+    private void syncNameWithTitle() {
+        if (this.name == null && this.title != null) {
+            this.name = this.title;
+        }
+    }
 
     public String[] getPlatforms() {
         if (platforms == null || platforms.trim().isEmpty()) {
@@ -83,6 +97,7 @@ public class GameEntity {
     public GameEntity(String externalApiId, String title) {
         this.externalApiId = externalApiId;
         this.title = title;
+        this.name = title; // Set name to match title
     }
 
     // Full constructor
@@ -92,6 +107,7 @@ public class GameEntity {
         this.id = id;
         this.externalApiId = externalApiId;
         this.title = title;
+        this.name = title; // Set name to match title
         this.description = description;
         this.coverImageUrl = coverImageUrl;
         this.releaseDate = releaseDate;

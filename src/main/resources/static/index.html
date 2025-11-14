@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gamers Cove</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <!-- Search Bar -->
+        <div class="search-container">
+            <div class="search-wrapper">
+                <input 
+                    type="text" 
+                    id="gameSearch" 
+                    class="search-input" 
+                    placeholder="Search for games..."
+                    autocomplete="off"
+                />
+                <div class="search-icon">🔍</div>
+            </div>
+            <div id="searchResults" class="search-results"></div>
+        </div>
+
+        <!-- Widget Buttons -->
+        <div class="widget-grid">
+            <a href="/profile.html" class="widget-button profile-widget" id="profile-widget">
+                <div class="widget-content">
+                    <div class="widget-icon">👤</div>
+                    <div class="widget-label">Profile</div>
+                </div>
+            </a>
+            
+            <a href="/ai-chat.html" class="widget-button ai-game-widget">
+                <div class="widget-content">
+                    <div class="widget-icon">🤖</div>
+                    <div class="widget-label">AI Chat</div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <!-- Firebase and Auth -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.js"></script>
+    
+    <!-- Firebase Auth UI Container (initially hidden) -->
+    <div id="firebaseui-auth-container" style="display: none;"></div>
+    
+    <!-- Profile Dropdown (initially hidden) -->
+    <div id="profile-dropdown" class="profile-dropdown" style="display: none;">
+        <div class="profile-header">
+            <img id="profile-pic" src="" alt="Profile" class="profile-pic">
+            <div class="profile-info">
+                <div id="profile-name" class="profile-name"></div>
+                <div id="profile-email" class="profile-email"></div>
+            </div>
+        </div>
+        <div class="profile-stats">
+            <div class="stat-item">
+                <span class="stat-label">Favorite Game:</span>
+                <span id="favorite-game" class="stat-value">None selected</span>
+            </div>
+            <button id="sign-out" class="sign-out-btn">Sign Out</button>
+        </div>
+    </div>
+
+    <script src="/js/search.js"></script>
+    <script src="/js/auth.js"></script>
+</body>
+</html>
+
