@@ -2,8 +2,11 @@ package GamersCoveDev.controllers;
 
 import GamersCoveDev.services.ai.GameCoveAgent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
@@ -20,7 +23,7 @@ public class AIChatController {
 
     @PostMapping("/chat")
     public ResponseEntity<String> chat(@RequestBody Map<String, String> request) {
-        System.out.println("\n=== [CHAT REQUEST RECEIVED] ===");
+        System.out.println("\n=== [CHAT REQUEST] ===");
         System.out.println("Raw request: " + request);
         
         String userMessage = request.get("message");
@@ -28,7 +31,9 @@ public class AIChatController {
         
         if (userMessage == null || userMessage.trim().isEmpty()) {
             System.out.println("Empty message received");
-            return ResponseEntity.badRequest().body("{\"reply\":\"Please provide a message\"}");
+            return ResponseEntity.badRequest()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body("{\"reply\":\"Please provide a message\"}");
         }
 
         try {
@@ -36,14 +41,37 @@ public class AIChatController {
             String aiResponse = gameCoveAgent.chat(userMessage);
             System.out.println("Raw AI response: " + aiResponse);
             
-            // Return the raw JSON string directly
-            System.out.println("============================\n");
-            return ResponseEntity.ok(aiResponse);
+            // Ensure the response is valid JSON
+            try {
+                // This will throw an exception if the response is not valid JSON
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.readTree(aiResponse);
+                
+                System.out.println("============================\n");
+                return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(aiResponse);
+            } catch (Exception e) {
+                // If not valid JSON, wrap it
+                System.out.println("Wrapping non-JSON response");
+                String wrappedResponse = "{\"reply\":\"" + 
+                    aiResponse.replace("\"", "\\\"") + "\"}";
+                    
+                System.out.println("Wrapped response: " + wrappedResponse);
+                return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(wrappedResponse);
+            }
         } catch (Exception e) {
-            String errorResponse = String.format("{\"reply\":\"Sorry, I encountered an error: %s\"}", 
-                e.getMessage().replace("\"", "'"));
+            System.err.println("Error in chat controller: " + e.getMessage());
+            e.printStackTrace();
+            
+            String errorResponse = "{\"reply\":\"Sorry, I encountered an error: " + 
+                e.getMessage().replace("\"", "'") + "\"}";
+                
             return ResponseEntity.internalServerError()
-                    .body(errorResponse);
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(errorResponse);
         }
     }
 }

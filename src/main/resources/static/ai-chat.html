@@ -386,6 +386,244 @@
             font-style: italic;
             margin: 5px 0;
         }
+
+        /* New Card Styles */
+        .game-card {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            overflow: hidden;
+            width: 280px;
+            margin: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .game-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-cover {
+            width: 100%;
+            height: 160px;
+            background: var(--bg-secondary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--accent-color);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .card-content {
+            padding: 12px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+            color: var(--text-primary);
+        }
+
+        .card-rating {
+            display: flex;
+            align-items: center;
+            color: #FFD700;
+            font-size: 14px;
+            margin: 4px 0;
+        }
+
+        .card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 8px 0;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .meta-item i {
+            margin-right: 4px;
+            font-size: 14px;
+        }
+
+        .card-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin: 8px 0 12px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 8px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .recommendations-grid,
+        .reviews-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: flex-start;
+            padding: 10px 0;
+        }
+
+        /* Review Card Styles */
+        .review-card {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 16px;
+            width: 100%;
+            max-width: 350px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .review-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reviewer-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .review-date {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .review-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #FFD700;
+            font-size: 16px;
+            white-space: nowrap;
+        }
+
+        .rating-score {
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-left: 4px;
+        }
+
+        .review-content {
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 12px 0;
+            font-size: 14px;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .review-game {
+            font-size: 12px;
+            color: var(--accent-color);
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .review-game i {
+            color: var(--text-secondary);
+            font-style: normal;
+            margin-right: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .review-card {
+                max-width: 100%;
+            }
+            
+            .reviews-grid {
+                gap: 12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -502,72 +740,95 @@
                         throw new Error('Network response was not ok');
                     }
                     
-                    const data = await response.json();
+                    let responseData = await response.json();
                     
-                    // Show the bot's reply if there's no game or reviews data
-                    if ((!data.game || !data.game.title) && (!data.reviews || data.reviews.length === 0) && data.reply && data.reply.trim() !== '') {
-                        addMessage('bot', data.reply);
+                    // Handle both string and object responses
+                    if (typeof responseData === 'string') {
+                        // If the response is a string, treat it as a simple message
+                        addMessage('bot', responseData);
+                        return;
                     }
                     
-                    // Display recommended games if available
-                    if (data.recommendations && data.recommendations.length > 0) {
-                        const recommendationsHtml = `
-                            <div class="recommendations-container">
-                                <div class="recommendations-grid">
-                                    ${data.recommendations.map(game => `
-                                        <div class="recommendation-card">
-                                            <div class="game-cover">
-                                                ${game.coverImageUrl ? 
-                                                    `<img src="${game.coverImageUrl}" alt="${game.title}" onerror="this.onerror=null; this.src='/images/game-placeholder.jpg';">` : 
-                                                    '<div class="no-image">🎮</div>'
-                                                }
+                    // Show the bot's reply if it exists
+                    if (responseData.reply && responseData.reply.trim() !== '' && responseData.reply.trim() !== ' ') {
+                        addMessage('bot', responseData.reply);
+                    }
+                    
+                    // Check if this is a review request
+                    const isReviewRequest = userMessage.toLowerCase().includes('review') || 
+                                         userMessage.toLowerCase().includes('opinion') ||
+                                         userMessage.toLowerCase().includes('thoughts on');
+                    
+                    // Check if this is a recommendation request
+                    const isRecommendationRequest = userMessage.toLowerCase().includes('recommend') || 
+                                                  userMessage.toLowerCase().includes('suggest') ||
+                                                  userMessage.toLowerCase().includes('what should i play');
+                    
+                    // Handle reviews
+                    if (isReviewRequest && responseData.reviews && responseData.reviews.length > 0) {
+                        // Get the game title from the response or use the one from the message context
+                        let gameTitle = 'Game';
+                        if (responseData.game?.title) {
+                            gameTitle = responseData.game.title;
+                        } else if (userMessage.toLowerCase().includes('hollow knight')) {
+                            gameTitle = 'Hollow Knight';
+                        } else if (responseData.reviews[0]?.gameTitle) {
+                            gameTitle = responseData.reviews[0].gameTitle;
+                        }
+                        
+                        let reviewsHtml = `
+                            <div class="reviews-container">
+                                <h3>${gameTitle} Reviews</h3>
+                                <div class="reviews-grid">`;
+                        
+                        responseData.reviews.forEach(review => {
+                            // Handle both number and string ratings
+                            const ratingNum = typeof review.rating === 'string' ? 
+                                parseFloat(review.rating) : 
+                                (review.rating || 0);
+                                
+                            // Convert 10-point scale to 5-star rating
+                            const starRating = Math.round((ratingNum / 10) * 5);
+                            const fullStars = Math.min(Math.max(1, starRating), 5);
+                            const emptyStars = 5 - fullStars;
+                            
+                            // Format review date if available
+                            const reviewDate = review.date ? new Date(review.date).toLocaleDateString() : '';
+                            
+                            reviewsHtml += `
+                                <div class="review-card">
+                                    <div class="review-header">
+                                        <div class="reviewer-info">
+                                            <div class="reviewer-avatar">
+                                                ${review.username ? review.username.charAt(0).toUpperCase() : '👤'}
                                             </div>
-                                            <div class="game-info">
-                                                <h4>${game.title || 'Untitled Game'}</h4>
-                                                ${game.genres && game.genres.length > 0 ? 
-                                                    `<div class="genres">${game.genres.slice(0, 2).join(' • ')}</div>` : 
-                                                    ''
-                                                }
+                                            <div>
+                                                <div class="reviewer-name">${review.username || 'Anonymous'}</div>
+                                                ${reviewDate ? `<div class="review-date">${reviewDate}</div>` : ''}
                                             </div>
                                         </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        `;
+                                        <div class="review-rating">
+                                            ${'★'.repeat(fullStars)}${'☆'.repeat(emptyStars)}
+                                            <span class="rating-score">${ratingNum.toFixed(1)}/10</span>
+                                        </div>
+                                    </div>
+                                    <div class="review-content">
+                                        ${review.content || 'No review content available.'}
+                                    </div>
+                                </div>`;
+                        });
                         
-                        const recsDiv = document.createElement('div');
-                        recsDiv.classList.add('bot-message', 'message', 'recommendations-message');
-                        recsDiv.innerHTML = recommendationsHtml;
-                        chatMessages.appendChild(recsDiv);
-                    }
-                    // Show game card only if we have valid game data with an image or description
-                    if (data.game && data.game.title && (data.game.coverImageUrl || data.game.description)) {
-                        const game = data.game;
-                        const gameCardHtml = `
-                            <div class="game-card">
-                                <div class="game-card-image">
-                                    ${game.coverImageUrl ? 
-                                        `<img src="${game.coverImageUrl}" alt="${game.title}" onerror="this.onerror=null; this.src='/images/game-placeholder.jpg';">` : 
-                                        '<div class="no-image">🎮</div>'
-                                    }
+                        reviewsHtml += `
                                 </div>
-                                <div class="game-card-content">
-                                    <h3>${game.title}</h3>
-                                    ${game.releaseDate ? `<p class="release-date">Released: ${new Date(game.releaseDate).getFullYear()}</p>` : ''}
-                                    ${game.genres && game.genres.length > 0 ? 
-                                        `<p class="genres">${game.genres.join(', ')}</p>` : ''}
-                                    ${game.description ? `<p class="description">${game.description}</p>` : ''}
-                                </div>
-                            </div>
-                        `;
+                            </div>`;
                         
-                        const gameCardDiv = document.createElement('div');
-                        gameCardDiv.classList.add('bot-message', 'message', 'game-card-message');
-                        gameCardDiv.innerHTML = gameCardHtml;
-                        chatMessages.appendChild(gameCardDiv);
+                        const reviewDiv = document.createElement('div');
+                        reviewDiv.classList.add('bot-message', 'message', 'reviews-message');
+                        reviewDiv.innerHTML = reviewsHtml;
+                        chatMessages.appendChild(reviewDiv);
                     }
-                    // Show recommendations if available
-                    if (data.recommendations && data.recommendations.length > 0) {
+                    // Handle recommendations
+                    else if (isRecommendationRequest && responseData.recommendations && responseData.recommendations.length > 0) {
                         let recommendationsHtml = `
                             <div class="recommendations-container">
                                 <h4>Recommended Games</h4>
@@ -604,24 +865,25 @@
                         chatMessages.appendChild(recsDiv);
                     }
                     // If there are reviews, display them in a formatted way
-                    else if (data.reviews && data.reviews.length > 0) {
+                    else if (responseData.reviews && responseData.reviews.length > 0) {
                         // Get the game title from the response or use the one from the message context
                         let gameTitle = 'Hollow Knight'; // Default fallback
                         
                         // Try to get the game title from different possible locations in the response
-                        if (data.game?.title) {
-                            gameTitle = data.game.title;
+                        if (responseData.game?.title) {
+                            gameTitle = responseData.game.title;
                         } else if (userMessage.toLowerCase().includes('hollow knight')) {
                             gameTitle = 'Hollow Knight';
-                        } else if (data.reviews[0]?.gameTitle) {
-                            gameTitle = data.reviews[0].gameTitle;
+                        } else if (responseData.reviews[0]?.gameTitle) {
+                            gameTitle = responseData.reviews[0].gameTitle;
                         }
                         
                         let reviewsHtml = `
                             <div class="reviews-container">
-                                <h4>${gameTitle} Reviews</h4>`;
+                                <h3>${gameTitle} Reviews</h3>
+                                <div class="reviews-grid">`;
                         
-                        data.reviews.forEach(review => {
+                        responseData.reviews.forEach(review => {
                             // Handle both number and string ratings
                             const ratingNum = typeof review.rating === 'string' ? 
                                 parseFloat(review.rating) : 
@@ -629,26 +891,46 @@
                                 
                             // Convert 10-point scale to 5-star rating
                             const starRating = Math.round((ratingNum / 10) * 5);
-                            const fullStars = Math.min(Math.max(0, starRating), 5);
+                            const fullStars = Math.min(Math.max(1, starRating), 5);
                             const emptyStars = 5 - fullStars;
                             
+                            // Format review date if available
+                            const reviewDate = review.date ? new Date(review.date).toLocaleDateString() : '';
+                            
                             reviewsHtml += `
-                                <div class="review">
-                                    <div class="review-rating">
-                                        ${'★'.repeat(fullStars)}${'☆'.repeat(emptyStars)}
-                                        <span class="rating-text">${ratingNum}/10</span>
+                                <div class="review-card">
+                                    <div class="review-header">
+                                        <div class="reviewer-info">
+                                            <div class="reviewer-avatar">
+                                                ${review.username ? review.username.charAt(0).toUpperCase() : '👤'}
+                                            </div>
+                                            <div>
+                                                <div class="reviewer-name">${review.username || 'Anonymous'}</div>
+                                                ${reviewDate ? `<div class="review-date">${reviewDate}</div>` : ''}
+                                            </div>
+                                        </div>
+                                        <div class="review-rating">
+                                            ${'★'.repeat(fullStars)}${'☆'.repeat(emptyStars)}
+                                            <span class="rating-score">${ratingNum.toFixed(1)}/10</span>
+                                        </div>
                                     </div>
                                     <div class="review-content">
                                         ${review.content || 'No review content available.'}
                                     </div>
+                                    ${review.gameTitle && review.gameTitle !== gameTitle ? 
+                                        `<div class="review-game">
+                                            <i>for</i> ${review.gameTitle}
+                                        </div>` : ''
+                                    }
                                 </div>`;
                         });
                         
                         reviewsHtml += `
+                                </div>
                             </div>`;
                         
                         const reviewDiv = document.createElement('div');
-                        reviewDiv.classList.add('bot-message', 'message');
+                        reviewDiv.classList.add('bot-message', 'message', 'reviews-message');
                         reviewDiv.innerHTML = reviewsHtml;
                         chatMessages.appendChild(reviewDiv);
                     }

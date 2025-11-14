@@ -6,9 +6,17 @@ import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import io.github.cdimascio.dotenv.Dotenv;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 @Service
+@Slf4j
 public class GameCoveAgent {
 
     private final AiAssistant chatAgent;
@@ -54,7 +62,48 @@ public class GameCoveAgent {
     }
 
     public String chat(String message) {
-        return chatAgent.chat(message);
+        try {
+            String response = chatAgent.chat(message);
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> responseMap = new HashMap<>();
+            
+            // Add the reply
+            responseMap.put("reply", response);
+            
+            // Check if we should include game cards
+            if (message.toLowerCase().contains("show me") || 
+                message.toLowerCase().contains("recommend") || 
+                message.toLowerCase().contains("game") ||
+                message.toLowerCase().contains("hollow") ||
+                message.toLowerCase().contains("knight") ||
+                message.toLowerCase().contains("review")) {
+                
+                // Add sample game data (replace with actual game data from your database)
+                List<Map<String, Object>> recommendations = new ArrayList<>();
+                
+                // Add sample game 1
+                Map<String, Object> game1 = new HashMap<>();
+                game1.put("title", "Hollow Knight");
+                game1.put("coverImageUrl", "https://images.igdb.com/igdb/image/upload/t_cover_big/co1r0e.jpg");
+                game1.put("genres", Arrays.asList("Metroidvania", "Action", "Adventure"));
+                recommendations.add(game1);
+                
+                // Add sample game 2
+                Map<String, Object> game2 = new HashMap<>();
+                game2.put("title", "Celeste");
+                game2.put("coverImageUrl", "https://images.igdb.com/igdb/image/upload/t_cover_big/co1r7j.jpg");
+                game2.put("genres", Arrays.asList("Platformer", "Indie", "Adventure"));
+                recommendations.add(game2);
+                
+                responseMap.put("recommendations", recommendations);
+            }
+            
+            return objectMapper.writeValueAsString(responseMap);
+            
+        } catch (Exception e) {
+            log.error("Error in chat: {}", e.getMessage(), e);
+            return "{\"reply\":\"Sorry, I encountered an error: " + e.getMessage().replace("\"", "'") + "\"}";
+        }
     }
 
     public static void main(String[] args) {

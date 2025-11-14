@@ -182,10 +182,12 @@ public class ReviewTool implements AgentTool {
                         Map<String, Object> reviewMap = new HashMap<>();
                         reviewMap.put("id", r.getId());
                         reviewMap.put("userId", r.getUserId());
+                        reviewMap.put("username", "User" + r.getUserId()); // Default username
                         reviewMap.put("gameId", r.getGameId());
+                        reviewMap.put("gameTitle", game.getTitle()); // Add game title
                         reviewMap.put("rating", r.getRating());
                         reviewMap.put("content", r.getContent());
-                        reviewMap.put("createdAt", r.getCreatedAt() != null ? 
+                        reviewMap.put("date", r.getCreatedAt() != null ? 
                             r.getCreatedAt().toString() : null);
                         return reviewMap;
                     })
